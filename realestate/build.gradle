@@ -1,0 +1,148 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.2'
+        classpath 'com.commercehub.gradle.plugin:gradle-avro-plugin:0.8.0'
+      //classpath 'org.github.ngbinh.scalastyle:gradle-scalastyle-plugin_2.11:1.0.1'
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://dl.bintray.com/salesforce/maven' }
+}
+
+apply plugin: 'application'
+apply plugin: 'java'
+apply plugin: 'scala'
+apply plugin: 'com.github.johnrengelman.shadow'
+//apply plugin: 'scalaStyle'
+apply plugin: 'com.commercehub.gradle.plugin.avro'
+apply from: 'spark.gradle'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+// The main class for the application plugin and is currently unused. Setting a dummy one.
+mainClassName = 'com.salesforce.app.RealEstate'
+
+ext {
+    scalaVersion = '2.11'
+    scalaVersionRevision = '12'
+    junitVersion = '4.11'
+    sparkVersion = '2.2.1'
+    scalaTestVersion = '3.0.5'
+    opVersion = '0.3.4'
+    collectionsVersion = '3.2.2'
+
+    mainClassName = 'com.salesforce.app.RealEstate'
+}
+
+configurations {
+    scalaLibrary
+    scalaCompiler
+}
+
+dependencies {
+    // Scala
+    zinc 'com.typesafe.zinc:zinc:0.3.15'
+    scalaLibrary "org.scala-lang:scala-library:2.11.12"
+    scalaCompiler "org.scala-lang:scala-compiler:2.11.12"
+    compile "org.scala-lang:scala-library:2.11.12"
+
+    // Spark
+    compileOnly "org.apache.spark:spark-core_2.11:2.2.1"
+    testCompile "org.apache.spark:spark-core_2.11:2.2.1"
+    compileOnly "org.apache.spark:spark-mllib_2.11:2.2.1"
+    testCompile "org.apache.spark:spark-mllib_2.11:2.2.1"
+    compileOnly "org.apache.spark:spark-sql_2.11:2.2.1"
+    testCompile "org.apache.spark:spark-sql_2.11:2.2.1"
+
+    // TransmogrifAI
+    compile "com.salesforce.transmogrifai:transmogrifai-core_2.11:0.3.4"
+
+    // Pretrained models used in TransmogrifAI, e.g. OpenNLP POS/NER models etc. (optional)
+    // compile "com.salesforce.transmogrifai:transmogrifai-models_2.11:0.3.4"
+
+    // Test
+    testCompile "org.scalatest:scalatest_2.11:3.0.5"
+    testCompile "junit:junit:4.11"
+
+    // Avro
+    compileOnly("org.apache.avro:avro:1.7.7") { exclude group: 'org.mortbay.jetty', module: 'servlet-api' }
+    testCompile("org.apache.avro:avro:1.7.7") { exclude group: 'org.mortbay.jetty', module: 'servlet-api' }
+    compileOnly("org.apache.avro:avro-mapred:1.7.7:hadoop2") { exclude group: 'org.mortbay.jetty', module: 'servlet-api' }
+    testCompile("org.apache.avro:avro-mapred:1.7.7:hadoop2") { exclude group: 'org.mortbay.jetty', module: 'servlet-api' }
+
+    // Spark Avro
+    compile ("com.databricks:spark-avro_2.11:4.0.0") { exclude group: "org.apache.avro", module: "avro" }
+
+}
+
+configurations.all {
+    resolutionStrategy {
+        cacheChangingModulesFor 0, 'seconds'
+        force "commons-collections:commons-collections:3.2.2",
+                "org.scala-lang:scala-library:2.11.12",
+                "org.scala-lang:scala-reflect:2.11.12"
+    }
+}
+configurations.zinc {
+    resolutionStrategy {
+        force 'org.scala-lang:scala-library:2.10.6', 'org.scala-lang:scala-reflect:2.10.6'
+    }
+}
+
+tasks.withType(ScalaCompile) {
+    configure(scalaCompileOptions.forkOptions) {
+        memoryMaximumSize = '1g'
+        jvmArgs = ['-XX:MaxMetaspaceSize=256m']
+    }
+}
+compileScala { scalaCompileOptions.additionalParameters = ["-optimize"] }
+compileTestScala { scalaCompileOptions.additionalParameters = ["-Yrangepos"] }
+[compileJava, compileTestJava]*.options.collect { options -> options.encoding = 'UTF-8' }
+
+jar {
+    manifest.attributes "Main-Class": "$mainClassName"
+    baseName="${rootProject.name}"
+}
+
+shadowJar {
+    zip64 = true
+    exclude 'META-INF/**'
+    manifest.attributes "Main-Class": "$mainClassName"
+    baseName = project.name + '-with-dependencies'
+}
+
+avro {
+    createSetters = true
+    fieldVisibility = "PUBLIC_DEPRECATED"
+    outputCharacterEncoding = "UTF-8"
+    stringType = "String"
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'build/generated-main-avro-java'
+        }
+    }
+}
+
+task repl(type: JavaExec) {
+    description 'Start Scala repl.'
+    main = "scala.tools.nsc.MainGenericRunner"
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput System.in
+    args '-usejavacp'
+}
+
+wrapper {
+    gradleVersion = '4.9'
+    distributionType = Wrapper.DistributionType.BIN
+    distributionSha256Sum = 'e66e69dce8173dd2004b39ba93586a184628bc6c28461bc771d6835f7f9b0d28'
+}

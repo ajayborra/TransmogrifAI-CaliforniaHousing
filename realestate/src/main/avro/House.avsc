@@ -1,0 +1,36 @@
+{
+  "type" : "record",
+  "name" : "House",
+  "namespace" : "salesforce",
+  "fields" : [ {
+    "name" : "houseId",
+    "type" : [ "int", "null" ]
+  }, {
+    "name" : "medianHouseValue",
+    "type" : [ "double", "null" ]
+  }, {
+    "name" : "medianIncome",
+    "type" : [ "double", "null" ]
+  }, {
+    "name" : "housingMedianAge",
+    "type" : [ "double", "null" ]
+  }, {
+    "name" : "totalRooms",
+    "type" : [ "double", "null" ]
+  }, {
+    "name" : "totalBedrooms",
+    "type" : [ "double", "null" ]
+  }, {
+    "name" : "population",
+    "type" : [ "double", "null" ]
+  }, {
+    "name" : "households",
+    "type" : [ "double", "null" ]
+  }, {
+    "name" : "latitude",
+    "type" : [ "string", "null" ]
+  }, {
+    "name" : "longitude",
+    "type" : [ "string", "null" ]
+  } ]
+}
