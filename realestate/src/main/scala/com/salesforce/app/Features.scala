@@ -42,9 +42,15 @@ trait Features extends Serializable {
     .extract(_.getHouseholds.toReal)
     .asPredictor
 
-  val latitude = FB.Text[House].extract(_.getLatitude.toText).asPredictor
+  val latitude = FB
+    .Real[House]
+    .extract(_.getLatitude.toReal)
+    .asPredictor
 
-  val longitude = FB.Text[House].extract(_.getLongitude.toText).asPredictor
+  val longitude = FB
+    .Real[House]
+    .extract(_.getLongitude.toReal)
+    .asPredictor
 
 }
 

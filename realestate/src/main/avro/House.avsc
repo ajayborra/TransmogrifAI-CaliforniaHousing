@@ -28,9 +28,9 @@
     "type" : [ "double", "null" ]
   }, {
     "name" : "latitude",
-    "type" : [ "string", "null" ]
+    "type" : [ "double", "null" ]
   }, {
     "name" : "longitude",
-    "type" : [ "string", "null" ]
+    "type" : [ "double", "null" ]
   } ]
 }

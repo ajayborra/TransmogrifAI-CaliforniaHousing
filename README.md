@@ -14,18 +14,18 @@ Housing data set from [http://lib.stat.cmu.edu/datasets/houses.zip](http://lib.s
 
 ### AutoML Generate Model Stats
 ```
-"bestModelUID" : "gbtr_338af55daf6d",
+"bestModelUID" : "gbtr_3e954745fd39",
 "testSetEvaluationResults" : {
-  "(regEval)_R2" : 0.6638612219644777,
-  "(regEval)_RootMeanSquaredError" : 67746.7035913606,
-  "(regEval)_MeanAbsoluteError" : 49895.365002267376,
-  "(regEval)_MeanSquaredError" : 4.58961584749567E9
+  "(regEval)_R2" : 0.7730732853257829,
+  "(regEval)_RootMeanSquaredError" : 55985.45154762118,
+  "(regEval)_MeanAbsoluteError" : 38265.15644522252,
+  "(regEval)_MeanSquaredError" : 3.1343707849910393E9
 },
-"bestModelName" : "gbtr_338af55daf6d_5",
+"bestModelName" : "gbtr_3e954745fd39_15",
 "trainingSetEvaluationResults" : {
-  "(regEval)_R2" : 0.6755974123855195,
-  "(regEval)_RootMeanSquaredError" : 65379.01496137572,
-  "(regEval)_MeanAbsoluteError" : 47949.27394384655,
-  "(regEval)_MeanSquaredError" : 4.2744155973197894E9
+  "(regEval)_R2" : 0.8191089857403431,
+  "(regEval)_RootMeanSquaredError" : 49013.585519052445,
+  "(regEval)_MeanAbsoluteError" : 33672.17530515888,
+  "(regEval)_MeanSquaredError" : 2.402331565433468E9
 }
 ```

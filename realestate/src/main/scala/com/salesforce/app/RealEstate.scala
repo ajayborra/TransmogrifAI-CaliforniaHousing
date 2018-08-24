@@ -13,7 +13,7 @@ import org.apache.spark.sql.{Dataset, SparkSession}
 
 object RealEstate extends OpAppWithRunner with Features {
 
-  val randomSeed = 567668959
+  val randomSeed = 1242850795
 
   ////////////////////////////////////////////////////////////////////////////////
   // READER DEFINITIONS
