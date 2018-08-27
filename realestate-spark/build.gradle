@@ -1,0 +1,46 @@
+apply plugin: 'java'
+apply plugin: 'scala'
+
+sourceCompatibility = 1.8
+version = '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    scalaVersion = '2.11'
+    scalaVersionRevision = '12'
+    scalaTestVersion = '3.0.5'
+    scalaCheckVersion = '1.14.0'
+    junitVersion = '4.11'
+    avroVersion = '1.7.7'
+    sparkVersion = '2.2.1'
+    sparkAvroVersion = '4.0.0'
+    scalaGraphVersion = '1.11.2'
+}
+
+configurations {
+    provided
+    compile.extendsFrom provided
+}
+
+jar {
+    dependsOn configurations.runtime
+    from {
+        (configurations.runtime - configurations.provided).collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    } {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
+}
+
+dependencies {
+    // Spark
+    compile"org.apache.spark:spark-core_$scalaVersion:$sparkVersion"
+    compile "org.apache.spark:spark-mllib_$scalaVersion:$sparkVersion"
+    compile "org.apache.spark:spark-sql_$scalaVersion:$sparkVersion"
+}
