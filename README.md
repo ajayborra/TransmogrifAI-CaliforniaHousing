@@ -1,4 +1,5 @@
-# TransmogrifAI-CaliforniaHousing
+# California Housing Data Set 
+Apache Spark Vs TransmogrifAI 
 
 This repo provides simple steps to automatically generate a [TransmogrifAI](https://github.com/salesforce/TransmogrifAI) app/project and train a model using its AutoML code generation capabilities.
 
