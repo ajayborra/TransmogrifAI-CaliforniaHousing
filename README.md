@@ -9,9 +9,31 @@ Housing data set from [http://lib.stat.cmu.edu/datasets/houses.zip](http://lib.s
 ### Steps
 
 - Clean up the downloaded CSV file and add header/column names.
-- Run the following command to automatically infer the column data type and generate an avro schema `transmogrifai gen --input data/cadata.csv --id houseId --response medianHouseValue --auto House RealEstate --overwrite`
-- Build the app/project with following command `./gradlew compileTestScala installDist`
-- Start training the model with the following command `./gradlew sparkSubmit -Dmain=com.salesforce.app.House -Dargs="--run-type=train --model-location=/tmp/house-model --read-location House=data/cadata.csv"`
+- Clone TransmogrifAI & Build CLI module from latest tag.
+
+
+```
+git clone https://github.com/salesforce/TransmogrifAI.git
+cd ./TransmogrifAI && git checkout 0.4.0 && ./gradlew cli:shadowJar
+alias transmogrifai="java -cp `pwd`/cli/build/libs/\* com.salesforce.op.cli.CLI"
+```
+
+- Fetch Dataset & Generate Real Estate App
+```
+cd .. && mkdir -p blog/data && cd blog/data
+wget https://raw.githubusercontent.com/ajayborra/TransmogrifAI-CaliforniaHousing/master/data/cadata.csv && cd ..
+transmogrifai gen --input data/cadata.csv --id houseId --response medianHouseValue --overwrite --auto HouseObject RealEstateApp
+cd realestateapp && sed -i 's/1-SNAPSHOT/0/g' build.gradle && ./gradlew compileTestScala installDist
+```
+
+Generate and build the real estate app using the California housing dataset.
+
+- Training the models with TransmogrifAI AutoML.
+
+```
+./gradlew sparkSubmit -Dmain=com.salesforce.app.RealEstateApp -Dargs="--run-type=train --model-location=./house-model --read-location HouseObject=`pwd`/../data/cadata.csv"
+```
+
 
 ### AutoML Generate Model Stats
 ```
